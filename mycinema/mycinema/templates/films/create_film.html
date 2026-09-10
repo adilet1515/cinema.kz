@@ -1,0 +1,280 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Создание фильма
+{% endblock %}
+
+{% block body %}
+
+<style>
+    .film-form-container {
+        max-width: 750px;
+        margin: 50px auto;
+    }
+
+    .film-form-card {
+        background: white;
+        padding: 35px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .film-form-title {
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        border-color: #86b7fe;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .genre-wrapper {
+        margin-bottom: 25px;
+    }
+
+    .genre-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+    }
+
+    #selected-genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .genre-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: #0dcaf0;
+        color: #212529;
+        border-radius: 15px;
+        font-size: 14px;
+    }
+
+    .remove-genre {
+        border: none;
+        background: transparent;
+        color: #212529;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+</style>
+
+
+<div class="container">
+
+    <div class="film-form-container">
+
+        <div class="film-form-card">
+
+            <h2 class="film-form-title">
+                Создание фильма
+            </h2>
+
+
+            <form method="post" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+
+                <!-- Название -->
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Название фильма
+                    </label>
+
+                    {{ form.title }}
+
+                    {% if form.title.errors %}
+                        <div class="text-danger">
+                            {{ form.title.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Описание -->
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Описание
+                    </label>
+
+                    {{ form.description }}
+
+                    {% if form.description.errors %}
+                        <div class="text-danger">
+                            {{ form.description.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Постер -->
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Постер
+                    </label>
+
+                    {{ form.poster }}
+
+                    {% if form.poster.errors %}
+                        <div class="text-danger">
+                            {{ form.poster.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Режиссёр -->
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Режиссёр
+                    </label>
+
+                    {{ form.director }}
+
+                    {% if form.director.errors %}
+                        <div class="text-danger">
+                            {{ form.director.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Жанры -->
+                <div class="genre-wrapper">
+
+                    <label class="form-label">
+                        Жанры
+                    </label>
+
+                    <div id="selected-genres"></div>
+
+                    {{ form.genres }}
+
+                    {% if form.genres.errors %}
+                        <div class="text-danger">
+                            {{ form.genres.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Кнопки -->
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Создать фильм
+                    </button>
+
+                    <a
+                        href="{% url 'films:index' %}"
+                        class="btn btn-outline-secondary"
+                    >
+                        Отмена
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    const select = document.getElementById('genre-select');
+    const selectedContainer = document.getElementById('selected-genres');
+
+    select.addEventListener('change', function () {
+
+        selectedContainer.innerHTML = '';
+
+        for (const option of select.selectedOptions) {
+
+            const badge = document.createElement('span');
+
+            badge.classList.add('genre-badge');
+
+            badge.innerHTML = `
+                ${option.text}
+                <button
+                    type="button"
+                    class="remove-genre"
+                >
+                    ×
+                </button>
+            `;
+
+            badge
+                .querySelector('.remove-genre')
+                .addEventListener('click', function () {
+
+                    option.selected = false;
+
+                    badge.remove();
+                });
+
+            selectedContainer.appendChild(badge);
+        }
+    });
+</script>
+
+{% endblock %}
+

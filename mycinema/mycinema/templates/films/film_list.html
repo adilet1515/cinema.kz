@@ -1,0 +1,180 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Films List
+{% endblock %}
+
+{% block body %}
+
+<style>
+    .film-card {
+        height: 100%;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .film-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .film-poster-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .film-poster {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .film-card:hover .film-poster {
+        transform: scale(1.03);
+    }
+
+    .film-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .film-description {
+        color: #666;
+        height: 72px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+
+    .genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 15px;
+    }
+
+    .genre-badge {
+        text-decoration: none;
+        font-size: 0.8rem;
+        padding: 5px 9px;
+        border-radius: 10px;
+    }
+
+    .film-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .film-date {
+        color: #888;
+        font-size: 0.8rem;
+    }
+</style>
+
+
+<div class="album py-5 bg-light">
+
+    <div class="container">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+            {% for film in films %}
+
+                <div class="col">
+
+                    <div class="card film-card shadow-sm">
+
+                        <!-- Постер -->
+                        <div class="film-poster-wrapper">
+
+                            <img
+                                src="{{ film.poster.url }}"
+                                class="film-poster"
+                                alt="{{ film.title }}"
+                            >
+
+                        </div>
+
+
+                        <!-- Содержимое карточки -->
+                        <div class="card-body d-flex flex-column">
+
+                            <h3 class="film-title">
+                                {{ film.title }}
+                            </h3>
+
+
+                            <!-- Жанры -->
+                            <div class="genres">
+
+                                {% for genre in film.genres.all %}
+
+                                    <a
+                                        href="{% url 'films:genre_detail' genre.pk %}"
+                                        class="badge text-bg-info genre-badge"
+                                    >
+                                        {{ genre }}
+                                    </a>
+
+                                {% empty %}
+
+                                    <span class="text-muted">
+                                        Жанр не указан
+                                    </span>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Описание -->
+                            <p class="card-text film-description">
+                                {{ film.description }}
+                            </p>
+
+
+                            <!-- Нижняя часть -->
+                            <div class="film-footer mt-auto">
+
+                                <a
+                                    class="btn btn-sm btn-outline-primary"
+                                    href="{% url 'films:detail' film.pk %}"
+                                >
+                                    Подробнее
+                                </a>
+
+                                <small class="film-date">
+                                    {{ film.posted_on|date:"d.m.Y" }}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+                    <p class="text-center text-muted">
+                        Фильмов пока нет.
+                    </p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

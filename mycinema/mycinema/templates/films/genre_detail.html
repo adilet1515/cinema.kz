@@ -1,0 +1,126 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ genre.name }}
+{% endblock %}
+
+{% block body %}
+
+<style>
+    .genre-page {
+        padding: 50px 0;
+    }
+
+    .genre-title {
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .film-card {
+        height: 100%;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .film-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .film-poster {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .film-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .film-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .director {
+        color: #777;
+        font-size: 14px;
+    }
+</style>
+
+
+<div class="container">
+
+    <div class="genre-page">
+
+        <h1 class="genre-title">
+            Фильмы в жанре «{{ genre.name }}»
+        </h1>
+
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+            {% for film in genre.films.all %}
+
+                <div class="col">
+
+                    <div class="card film-card shadow-sm">
+
+                        <img
+                            src="{{ film.poster.url }}"
+                            class="film-poster"
+                            alt="{{ film.title }}"
+                        >
+
+                        <div class="card-body">
+
+                            <h2 class="film-title">
+                                {{ film.title }}
+                            </h2>
+
+                            <div class="film-info">
+
+                                <span class="director">
+                                    {{ film.director }}
+                                </span>
+
+                                <a
+                                    href="{% url 'films:detail' film.pk %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    Подробнее
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <p class="text-muted">
+                        В этом жанре пока нет фильмов.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

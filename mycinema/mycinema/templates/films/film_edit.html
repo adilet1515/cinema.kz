@@ -1,0 +1,100 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Редактирование фильма
+{% endblock %}
+
+{% block body %}
+
+    <h2>Редактирование фильма: {{ film.title }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.title }}
+        {{ form.description }}
+        {{ form.poster }}
+        {{ form.director }}
+
+
+        <div class="genre-wrapper">
+
+            <div id="selected-genres"></div>
+
+            {{ form.genres }}
+
+        </div>
+        <button type="submit">
+            Сохранить
+        </button>
+    </form>
+
+    <a href="{% url 'films:detail' film.pk %}">
+        Отмена
+    </a>
+      <script>
+                const select = document.getElementById('genre-select');
+                const selectedContainer = document.getElementById('selected-genres');
+
+                select.addEventListener('change', function () {
+
+                    // Очищаем только отображение бейджей
+                    selectedContainer.innerHTML = '';
+
+                    // Создаём бейдж для каждого выбранного жанра
+                    for (const option of select.selectedOptions) {
+
+                        const badge = document.createElement('span');
+
+                        badge.classList.add('genre-badge');
+
+                        badge.innerHTML = `
+                            ${option.text}
+                            <button type="button" class="remove-genre">×</button>
+                        `;
+
+                        // Кнопка удаления
+                        badge.querySelector('.remove-genre').addEventListener('click', function () {
+
+                            option.selected = false;
+
+                            badge.remove();
+
+                        });
+
+                        selectedContainer.appendChild(badge);
+                    }
+                });
+            </script>
+            <style>
+                #selected-genres {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin-bottom: 10px;
+                }
+
+                .genre-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+
+                    padding: 6px 10px;
+
+                    background: #333;
+                    color: white;
+
+                    border-radius: 15px;
+                }
+
+                .remove-genre {
+                    border: none;
+                    background: transparent;
+                    color: white;
+                    cursor: pointer;
+                    font-size: 16px;
+                }
+            </style>
+{% endblock %}
+

@@ -1,0 +1,191 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ film.title }}
+{% endblock %}
+
+{% block body %}
+
+<style>
+    .film-detail {
+        max-width: 1000px;
+        margin: 50px auto;
+    }
+
+    .film-card {
+        display: flex;
+        gap: 35px;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .film-poster {
+        width: 300px;
+        height: 430px;
+        object-fit: cover;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+
+    .film-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .film-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .film-description {
+        color: #555;
+        line-height: 1.6;
+        margin-top: 20px;
+    }
+
+    .film-meta {
+        margin-top: 15px;
+    }
+
+    .film-meta p {
+        margin-bottom: 8px;
+    }
+
+    .film-meta strong {
+        color: #333;
+    }
+
+    .genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 10px;
+    }
+
+    .genre-badge {
+        text-decoration: none;
+    }
+
+    .film-actions {
+        margin-top: auto;
+        padding-top: 25px;
+    }
+
+    @media (max-width: 768px) {
+        .film-card {
+            flex-direction: column;
+        }
+
+        .film-poster {
+            width: 100%;
+            height: 400px;
+        }
+    }
+</style>
+
+
+<div class="container">
+
+    <div class="film-detail">
+
+        <div class="film-card">
+
+            <!-- Постер -->
+            <img
+                src="{{ film.poster.url }}"
+                class="film-poster"
+                alt="{{ film.title }}"
+            >
+
+
+            <!-- Информация о фильме -->
+            <div class="film-info">
+
+                <h1 class="film-title">
+                    {{ film.title }}
+                </h1>
+
+
+                <!-- Жанры -->
+                <div class="genres">
+
+                    {% for genre in film.genres.all %}
+
+                        <a
+                            href="{% url 'films:genre_detail' genre.pk %}"
+                            class="badge text-bg-info genre-badge"
+                        >
+                            {{ genre }}
+                        </a>
+
+                    {% empty %}
+
+                        <span class="text-muted">
+                            Жанр не указан
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Основная информация -->
+                <div class="film-meta">
+
+                    <p>
+                        <strong>Режиссёр:</strong>
+                        {{ film.director }}
+                    </p>
+
+                    <p>
+                        <strong>Добавил:</strong>
+                        {{ film.author }}
+                    </p>
+
+                </div>
+
+
+                <!-- Описание -->
+                <p class="film-description">
+                    {{ film.description }}
+                </p>
+
+
+                <!-- Кнопки -->
+                <div class="film-actions">
+
+                    {% if film.author == request.user %}
+
+                        <a
+                            href="{% url 'films:update' film.pk %}"
+                            class="btn btn-primary"
+                        >
+                            Редактировать
+                        </a>
+
+                    {% endif %}
+
+                    <a
+                        href="{% url 'films:list' %}"
+                        class="btn btn-outline-secondary"
+                    >
+                        Назад к фильмам
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
